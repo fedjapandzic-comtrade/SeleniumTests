@@ -4,6 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -20,10 +21,6 @@ public class SeleniumCaseTwo {
     public void open_browser(){
         driver.get("https://www.saucedemo.com/");
         wait= new WebDriverWait(driver, Duration.ofSeconds(3));
-    }
-
-    @Test(priority = 0)
-    public void login(){
         WebElement username = driver.findElement(By.name("user-name"));
         WebElement password = driver.findElement(By.name("password"));
         WebElement button = driver.findElement(By.name("login-button"));
@@ -31,6 +28,16 @@ public class SeleniumCaseTwo {
         username.sendKeys("standard_user");
         password.sendKeys("secret_sauce");
         button.click();
+    }
+
+    @AfterTest
+    public void logout(){
+        WebElement burgerMenu = driver.findElement(By.className("bm-burger-button"));
+        burgerMenu.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout_sidebar_link")));
+        WebElement logoutButton = driver.findElement(By.id("logout_sidebar_link"));
+        logoutButton.click();
+        driver.quit();
     }
 
     @Test(priority = 1)
@@ -103,12 +110,4 @@ public class SeleniumCaseTwo {
         assertEquals("THANK YOU FOR YOUR ORDER",title);
     }
 
-    @Test(priority = 12)
-    public void logout(){
-        WebElement burgerMenu = driver.findElement(By.className("bm-burger-button"));
-        burgerMenu.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout_sidebar_link")));
-        WebElement logoutButton = driver.findElement(By.id("logout_sidebar_link"));
-        logoutButton.click();
-    }
 }

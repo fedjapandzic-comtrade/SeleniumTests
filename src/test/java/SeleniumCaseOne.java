@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -12,19 +13,16 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SeleniumCaseOne {
+public class SeleniumCaseOne{
     WebDriver driver = new ChromeDriver();
     WebDriverWait wait;
+
 
 
     @BeforeTest
     public void open_browser(){
         driver.get("https://www.saucedemo.com/");
         wait= new WebDriverWait(driver, Duration.ofSeconds(3));
-    }
-
-    @Test(priority = 0)
-    public void login(){
         WebElement username = driver.findElement(By.name("user-name"));
         WebElement password = driver.findElement(By.name("password"));
         WebElement button = driver.findElement(By.name("login-button"));
@@ -32,6 +30,17 @@ public class SeleniumCaseOne {
         username.sendKeys("standard_user");
         password.sendKeys("secret_sauce");
         button.click();
+    }
+
+    @AfterTest
+    public void close(){
+        wait= new WebDriverWait(driver, Duration.ofSeconds(3));
+        WebElement burgerMenu = driver.findElement(By.className("bm-burger-button"));
+        burgerMenu.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout_sidebar_link")));
+        WebElement logoutButton = driver.findElement(By.id("logout_sidebar_link"));
+        logoutButton.click();
+        driver.quit();
     }
 
     @Test(priority = 1)
@@ -64,13 +73,5 @@ public class SeleniumCaseOne {
         Assert.assertTrue(linkedinLink.isDisplayed());
     }
 
-    @Test (priority = 5)
-    public void logoutExists(){
-        WebElement burgerMenu = driver.findElement(By.className("bm-burger-button"));
-        burgerMenu.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("logout_sidebar_link")));
-        WebElement logoutButton = driver.findElement(By.id("logout_sidebar_link"));
-        logoutButton.click();
-    }
 
 }
